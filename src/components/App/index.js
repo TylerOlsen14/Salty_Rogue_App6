@@ -10,6 +10,8 @@ import firebase from '../firebase'
 
 const theme = createMuiTheme()
 
+var db = firebase.firestore();
+
 export default function App() {
 
   const[firebaseInitialized, setFirebaseInitialized] = useState(false)
@@ -30,7 +32,8 @@ export default function App() {
             <Route exact path="/phonerecords" component={CallList} />
           </Switch>
         </Router>
+        <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-firestore.js"></script>
       </MuiThemeProvider>
     ) : <div id="loader"><CircularProgress /></div>
   }
-

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Typography, Paper, CircularProgress, Button } from '@material-ui/core'
 import withStyles from '@material-ui/core/styles/withStyles'
-import firebase from '../firebase'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import Firebase from '../firebase'
 import { withRouter } from 'react-router-dom'
 
 const styles = theme => ({
@@ -31,6 +33,18 @@ const styles = theme => ({
 		marginTop: theme.spacing.unit * 3,
 	},
 })
+var db = Firebase.firestore();
+var docRef = db.collection("PhoneRecords");
+
+docRef.get().then(function(doc) {
+  if (doc.exists) {
+    console.log("Document data:", doc.data());
+  } else {
+    console.log("No such document")
+  }
+}).catch(function(error) {
+  console.log("Error getting document:", error)
+})
 
 function CallList(props) {
 	const { classes } = props
@@ -40,11 +54,30 @@ function CallList(props) {
   const [question, setQuestion] = useState('')
   const [resolution, setResolution] = useState('')
 
+  const PhoneRecord = props => (
+    <Card>
+      <CardContent>
+        <Typography color="textSecondary" gutterBottom>
+          {name ? `"${name}"` : <CircularProgress size={20} />}
+        </Typography>
+        <Typography color="textSecondary" gutterBottom>
+          {name ? `"${property}"` : <CircularProgress size={20} />}
+        </Typography>
+        <Typography color="textSecondary" gutterBottom>
+          {name ? `"${question}"` : <CircularProgress size={20} />}
+        </Typography>
+        <Typography color="textSecondary" gutterBottom>
+          {name ? `"${resolution}"` : <CircularProgress size={20} />}
+        </Typography>
+      </CardContent>
+    </Card>
+)
+
 	useEffect(() => {
-		firebase.getCallRecord().then(setName)
-		firebase.getCallRecord().then(setProperty)
-		firebase.getCallRecord().then(setQuestion)
-		firebase.getCallRecord().then(setResolution)
+		Firebase.getCallRecord().then(setName)
+		Firebase.getCallRecord().then(setProperty)
+		Firebase.getCallRecord().then(setQuestion)
+		Firebase.getCallRecord().then(setResolution)
 	})
 
 	return (
@@ -53,7 +86,7 @@ function CallList(props) {
 				<Typography component="h1" variant="h5">
           Call Records          
         </Typography>
-				<Typography component="h1" variant="h5">
+				{/* <Typography component="h1" variant="h5">
 					Client's name: {name ? `"${name}"` : <CircularProgress size={20} />}
 				</Typography>
 				<Typography component="h1" variant="h5">
@@ -64,8 +97,9 @@ function CallList(props) {
 				</Typography>
 				<Typography component="h1" variant="h5">
 					Resolution: {resolution ? `"${resolution}"` : <CircularProgress size={20} />}
-				</Typography>
-				<Button
+				</Typography> */}
+        <PhoneRecord />
+				{/* <Button
 					type="submit"
 					fullWidth
 					variant="contained"
@@ -73,15 +107,15 @@ function CallList(props) {
 					onClick={logout}
 					className={classes.submit}>
 					Logout
-          		</Button>
+          		</Button> */}
 			</Paper>
 		</main>
 	)
 
-	async function logout() {
-		await firebase.logout()
-		props.history.push('/')
-	}
+	// async function logout() {
+	// 	await Firebase.logout()
+	// 	props.history.push('/')
+	// }
 }
 
 export default withRouter(withStyles(styles)(CallList))

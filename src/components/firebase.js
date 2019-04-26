@@ -1,4 +1,5 @@
 import app from 'firebase/app'
+const firebase = require('firebase');
 import 'firebase/auth'
 import 'firebase/firebase-firestore'
 
@@ -10,6 +11,8 @@ const config = {
   storageBucket: "salty-rogue.appspot.com",
   messagingSenderId: "293014247485"
 };
+
+var db = firebase.firestore()
 
 class Firebase {
   constructor() {
@@ -25,8 +28,13 @@ class Firebase {
   }
   
   async getCallRecord() {
-    const record = await this.db.doc('PhoneRecords/').get()
-    return record.get('record')
+    const record = await this.db.collection('PhoneRecords').get().then(function(querySnapshot){
+      querySnapshot.forEach(function(doc) {
+        //doc.data() is never undefined for query doc snapshots
+        return doc.id, ' => ', doc.data()
+      })
+    })
+        // return record.get('PhoneRecords')
   }
   
 }
